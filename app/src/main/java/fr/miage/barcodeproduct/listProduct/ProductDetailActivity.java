@@ -220,7 +220,12 @@ public class ProductDetailActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_delete: {
-                deleteProduct();
+                if(product != null){
+                    deleteProduct();
+                }else{
+                    Toast.makeText(ProductDetailActivity.this, "Something wrong happened",Toast.LENGTH_SHORT)
+                            .show();
+                }
                 return true;
             }
         }
