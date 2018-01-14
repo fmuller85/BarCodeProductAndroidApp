@@ -1,11 +1,16 @@
 package fr.miage.barcodeproduct.createproduct;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
@@ -14,6 +19,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import org.parceler.Parcels;
 
@@ -24,6 +30,7 @@ import java.util.ArrayList;
 import droidninja.filepicker.FilePickerBuilder;
 import droidninja.filepicker.FilePickerConst;
 import fr.miage.barcodeproduct.R;
+import fr.miage.barcodeproduct.barcodereader.MainActivity;
 import fr.miage.barcodeproduct.createproduct.adapter.AttachedFilesListAdapter;
 import fr.miage.barcodeproduct.model.Product;
 import fr.miage.barcodeproduct.utils.StorageUtils;
@@ -78,25 +85,27 @@ public class ChooseFileActivity extends AppCompatActivity implements AttachedFil
         fabAddDoc.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FilePickerBuilder.getInstance().setMaxCount(1)
-                        .setActivityTheme(R.style.AppTheme)
-                        .pickFile(ChooseFileActivity.this);
+                if(checkReadExternalStoragePermission(SELECT_DOC)){
+                    executeAction(SELECT_DOC);
+                }
             }
         });
 
         fabAddPicFromGallery.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FilePickerBuilder.getInstance().setMaxCount(1)
-                        .setActivityTheme(R.style.AppTheme)
-                        .pickPhoto(ChooseFileActivity.this);
+                if(checkReadExternalStoragePermission(SELECT_PIC)){
+                    executeAction(SELECT_PIC);
+                }
             }
         });
 
         fabTakePic.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                dispatchTakePictureIntent(REQUEST_TAKE_PHOTO);
+                if(checkReadExternalStoragePermission(TAKE_PIC)){
+                    executeAction(TAKE_PIC);
+                }
             }
         });
 
@@ -210,5 +219,92 @@ public class ChooseFileActivity extends AppCompatActivity implements AttachedFil
         // simply show and hide the relevant UI components.
         progressBar.setVisibility(show ? View.VISIBLE : View.GONE);
         fileForm.setVisibility(show ? View.GONE : View.VISIBLE);
+    }
+
+    public final static int SELECT_DOC = 1;
+    public final static int SELECT_PIC = 2;
+    public final static int TAKE_PIC = 3;
+
+    private void executeAction(int requestCode){
+        if(requestCode == SELECT_DOC){
+            FilePickerBuilder.getInstance().setMaxCount(1)
+                    .setActivityTheme(R.style.AppTheme)
+                    .pickFile(ChooseFileActivity.this);
+        }
+        if(requestCode == SELECT_PIC){
+            FilePickerBuilder.getInstance().setMaxCount(1)
+                    .setActivityTheme(R.style.AppTheme)
+                    .pickPhoto(ChooseFileActivity.this);
+        }
+        if(requestCode == TAKE_PIC){
+            dispatchTakePictureIntent(REQUEST_TAKE_PHOTO);
+        }
+    }
+
+    public boolean checkReadExternalStoragePermission(int requestCode){
+        if(ContextCompat.checkSelfPermission(ChooseFileActivity.this,
+                Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
+
+            ActivityCompat.requestPermissions(ChooseFileActivity.this,
+                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, requestCode);
+
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public void onRequestPermissionsResult (int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults){
+        switch (requestCode) {
+            case SELECT_DOC :{
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    {
+                        if (ContextCompat.checkSelfPermission(ChooseFileActivity.this,
+                                Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_DENIED) {
+                            Toast.makeText(this, "permission granted", Toast.LENGTH_LONG).show();
+                            executeAction(requestCode);
+
+                        } else {
+                            Toast.makeText(this, "no permission granted", Toast.LENGTH_LONG).show();
+                        }
+
+                    }
+                    return;
+                }
+            }
+
+            case SELECT_PIC :{
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    {
+                        if (ContextCompat.checkSelfPermission(ChooseFileActivity.this,
+                                Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_DENIED) {
+                            Toast.makeText(this, "permission granted", Toast.LENGTH_LONG).show();
+                            executeAction(requestCode);
+                        } else {
+                            Toast.makeText(this, "no permission granted", Toast.LENGTH_LONG).show();
+                        }
+
+                    }
+                    return;
+                }
+            }
+
+            case TAKE_PIC :{
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    {
+                        if (ContextCompat.checkSelfPermission(ChooseFileActivity.this,
+                                Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_DENIED) {
+                            Toast.makeText(this, "permission granted", Toast.LENGTH_LONG).show();
+                            executeAction(requestCode);
+                        } else {
+                            Toast.makeText(this, "no permission granted", Toast.LENGTH_LONG).show();
+                        }
+
+                    }
+                    return;
+                }
+            }
+
+        }
     }
 }
