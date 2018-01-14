@@ -1,0 +1,59 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <string name="app_name">BarCodeProduct</string>
+    <string name="shared_pref">barcodeproduct_prefs</string>
+
+    <!-- Strings related to login -->
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="action_register_short">REGISTER</string>
+    <string name="action_register">Not a member ? Sign up now</string>
+    <string name="action_sign_in">Already registred! Login Me.</string>
+    <string name="error_invalid_email">This email address is invalid</string>
+    <string name="error_invalid_password">This password is too short</string>
+    <string name="error_incorrect_password">This password is incorrect</string>
+    <string name="error_field_required">This field is required</string>
+
+    <!-- Strings related to barcode reader -->
+    <string name="ok">OK</string>
+    <string name="yes">YES</string>
+    <string name="no">NO</string>
+    <string name="permission_camera_rationale">Access to the camera is needed for detection</string>
+    <string name="no_camera_permission">This application cannot run because it does not have the camera permission.  The application will now exit.</string>
+    <string name="low_storage_error">Face detector dependencies cannot be downloaded due to low device storage</string>
+    <string name="title_activity_main">Barcode Reader Sample</string>
+    <string name="barcode_header">Click &quot;Read Barcode&quot; to read a barcode</string>
+    <string name="read_barcode">Read Barcode</string>
+    <string name="auto_focus">Auto Focus</string>
+    <string name="use_flash">Use Flash</string>
+    <string name="barcode_success">Barcode read successfully</string>
+    <string name="barcode_failure">No barcode captured</string>
+    <string name="barcode_error">"Error reading barcode: %1$s"</string>
+
+    <!-- Strings related to save product use case -->
+    <string name="info_choose_product">Choose or enter a product name</string>
+    <string name="info_tell_more">Tell more ...</string>
+    <string name="info_tell_about_store">Tell about the store</string>
+    <string name="product_name">Product name</string>
+    <string name="product_price">Product price</string>
+    <string name="action_pick_date">Pick date</string>
+    <string name="product_purchase_date">Purchase date</string>
+    <string name="product_constructor_warranty">Constructor warranty</string>
+    <string name="product_commercial_warranty">Commercial warranty</string>
+    <string name="store_online">Online store ?</string>
+    <string name="store_name">Store name</string>
+    <string name="store_city">Store city</string>
+    <string name="store_address">Store address</string>
+    <string name="store_website">Store website</string>
+    <string name="product_barcode">Barcode</string>
+    <string name="txt_suggestion">Suggestion</string>
+    <string name="info_enter_product_name">Enter a product name</string>
+    <string name="action_next_step_1" tools:ignore="TypographyFractions">Next Step 1/4</string>
+    <string name="action_next_step_2">Next Step 2/4</string>
+    <string name="action_next_step_3" tools:ignore="TypographyFractions">Next Step 3/4</string>
+    <string name="action_final_step">Save product</string>
+
+    <string name="info_attach_files">Attach files to your product</string>
+
+
+</resources>
