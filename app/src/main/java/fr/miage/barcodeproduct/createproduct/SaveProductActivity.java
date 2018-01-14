@@ -12,8 +12,6 @@ import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.google.android.gms.vision.barcode.Barcode;
-
 import org.parceler.Parcels;
 
 import fr.miage.barcodeproduct.R;
@@ -22,7 +20,6 @@ import fr.miage.barcodeproduct.model.Product;
 import fr.miage.barcodeproduct.model.remote.BarcodeProductAPI;
 import fr.miage.barcodeproduct.model.remote.ProductSuggestion;
 import fr.miage.barcodeproduct.utils.ApplicationPreferences;
-import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -40,7 +37,7 @@ public class SaveProductActivity extends AppCompatActivity {
     private ProgressBar loadSuggestionProgressBar;
     private FrameLayout suggestionContainer;
 
-    private Barcode barcode;
+    private String barcode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +50,7 @@ public class SaveProductActivity extends AppCompatActivity {
             getActionBar().setDisplayHomeAsUpEnabled(true);
         }
 
-        barcode = getIntent().getParcelableExtra(BarcodeCaptureActivity.BarcodeObject);
+        barcode = getIntent().getStringExtra(BarcodeCaptureActivity.BarcodeObject);
 
         tvBarcode = findViewById(R.id.tv_barcode);
         btNextStep = findViewById(R.id.bt_next_step);
@@ -61,13 +58,13 @@ public class SaveProductActivity extends AppCompatActivity {
         loadSuggestionProgressBar = findViewById(R.id.load_suggestion_progress);
         suggestionContainer = findViewById(R.id.suggestion_container);
 
-        tvBarcode.setText(barcode.displayValue);
+        tvBarcode.setText(barcode);
         btNextStep.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (etProductName.getText().length() > 0) {
                     Intent intent = new Intent(SaveProductActivity.this, SaveProductDataActivity.class);
-                    Product product = createProduct(barcode.displayValue, etProductName.getText().toString());
+                    Product product = createProduct(barcode, etProductName.getText().toString());
                     intent.putExtra("product", Parcels.wrap(product));
                     startActivity(intent);
                 } else {
@@ -76,7 +73,7 @@ public class SaveProductActivity extends AppCompatActivity {
             }
         });
 
-        searchProduct(appPrefs.getEmail(), appPrefs.getPassword(), barcode.displayValue);
+        searchProduct(appPrefs.getEmail(), appPrefs.getPassword(), barcode);
     }
 
     /**
@@ -91,7 +88,7 @@ public class SaveProductActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(SaveProductActivity.this, SaveProductDataActivity.class);
-                Product product = createProduct(barcode.displayValue, productName);
+                Product product = createProduct(barcode, productName);
                 intent.putExtra("product", Parcels.wrap(product));
                 startActivity(intent);
             }
@@ -135,12 +132,12 @@ public class SaveProductActivity extends AppCompatActivity {
                     public void onResponse(@NonNull Call<ProductSuggestion> call, @NonNull Response<ProductSuggestion> response) {
                         System.out.println("response = [" + response.code() + "]");
                         if (response.isSuccessful()) {
-                            if(response.body() == null){
+                            if (response.body() == null) {
                                 displayNoSuggestion();
-                            }else{
+                            } else {
                                 createSuggestion(response.body().getName());
                             }
-                        }else{
+                        } else {
                             displayNoSuggestion();
                         }
                     }

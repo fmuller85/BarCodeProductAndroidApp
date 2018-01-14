@@ -13,6 +13,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ProgressBar;
 
 import org.parceler.Parcels;
 
@@ -41,6 +42,8 @@ public class ChooseFileActivity extends AppCompatActivity implements AttachedFil
     private FloatingActionButton fabTakePic;
     private FloatingActionButton fabAddPicFromGallery;
     private Button btCreateProduct;
+    private ProgressBar progressBar;
+    private View fileForm;
 
     private AttachedFilesListAdapter adapter;
     private ArrayList<String> filesPath;
@@ -62,6 +65,8 @@ public class ChooseFileActivity extends AppCompatActivity implements AttachedFil
         fabAddPicFromGallery = findViewById(R.id.fab_insert_pic);
         fabTakePic = findViewById(R.id.fab_take_pic);
         btCreateProduct = findViewById(R.id.bt_next_step);
+        progressBar = findViewById(R.id.send_progress);
+        fileForm = findViewById(R.id.file_form);
 
         btCreateProduct.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -199,5 +204,11 @@ public class ChooseFileActivity extends AppCompatActivity implements AttachedFil
             createProductTask = null;
         }
         super.onStop();
+    }
+
+    void showProgress(final boolean show) {
+        // simply show and hide the relevant UI components.
+        progressBar.setVisibility(show ? View.VISIBLE : View.GONE);
+        fileForm.setVisibility(show ? View.GONE : View.VISIBLE);
     }
 }

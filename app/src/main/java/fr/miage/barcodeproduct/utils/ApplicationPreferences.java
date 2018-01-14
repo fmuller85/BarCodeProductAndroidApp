@@ -66,6 +66,7 @@ public class ApplicationPreferences {
         prefsEditor.putString("email", "");
         prefsEditor.putString("password", "");
         prefsEditor.putBoolean("userRegistered", false);
+        prefsEditor.putBoolean("loaded", false);
         prefsEditor.commit();
     }
 

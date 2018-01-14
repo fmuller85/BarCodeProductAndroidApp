@@ -221,7 +221,7 @@ public class RegisterActivity extends AppCompatActivity {
 
     public void executeCreateUserTask(final String email, final String password) {
         showProgress(true);
-        BarcodeProductAPI.getAuthInstance(email, password).getApiService()
+        BarcodeProductAPI.getInstance().getApiService()
                 .createUser(email, password)
                 .enqueue(new Callback<ResponseBody>() {
                     @Override

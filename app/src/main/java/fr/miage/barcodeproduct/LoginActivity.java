@@ -81,8 +81,8 @@ public class LoginActivity extends AppCompatActivity {
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
 
-        mEmailView.setText("machin@gmail.com");
-        mPasswordView.setText("machin");
+        mEmailView.setText("");
+        mPasswordView.setText("");
     }
 
     /**

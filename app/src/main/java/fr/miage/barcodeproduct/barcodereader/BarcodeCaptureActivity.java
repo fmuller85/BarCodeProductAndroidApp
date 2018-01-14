@@ -16,8 +16,6 @@
 package fr.miage.barcodeproduct.barcodereader;
 
 import android.Manifest;
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -31,9 +29,11 @@ import android.hardware.Camera;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.text.InputType;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
@@ -57,6 +57,7 @@ import fr.miage.barcodeproduct.barcodereader.ui.camera.CameraSource;
 import fr.miage.barcodeproduct.barcodereader.ui.camera.CameraSourcePreview;
 import fr.miage.barcodeproduct.barcodereader.ui.camera.GraphicOverlay;
 import fr.miage.barcodeproduct.createproduct.SaveProductActivity;
+import fr.miage.barcodeproduct.widget.DialogFactory;
 
 /**
  * Activity for the multi-tracker app.  This app detects barcodes and displays the value with the
@@ -88,6 +89,8 @@ public final class BarcodeCaptureActivity extends AppCompatActivity implements B
     View panelTop;
     View panelBottom;
 
+    private FloatingActionButton fabInsertBarcode;
+
     /**
      * Initializes the UI and creates the detector pipeline.
      */
@@ -101,6 +104,7 @@ public final class BarcodeCaptureActivity extends AppCompatActivity implements B
 
         panelTop = findViewById(R.id.panel_1);
         panelBottom = findViewById(R.id.panel_2);
+        fabInsertBarcode = findViewById(R.id.fab_insert_barcode);
 
         // read parameters from the intent used to launch the activity.
         boolean autoFocus = getIntent().getBooleanExtra(AutoFocus, true);
@@ -122,6 +126,24 @@ public final class BarcodeCaptureActivity extends AppCompatActivity implements B
                 Snackbar.LENGTH_LONG)
                 .setActionTextColor(getResources().getColor(R.color.colorPrimary))
                 .show();
+
+        fabInsertBarcode.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DialogFactory.showInputDialog(BarcodeCaptureActivity.this, "Enter barcode",
+                        InputType.TYPE_CLASS_NUMBER, new DialogFactory.DialogCallBack<String>() {
+                            @Override
+                            public void callBackCall(String barcode) {
+                                if(barcode.length() < 8){
+                                    Toast.makeText(BarcodeCaptureActivity.this,
+                                            "Must be 8 characters or more", Toast.LENGTH_LONG).show();
+                                }else{
+                                    startNextActivity(barcode);
+                                }
+                            }
+                        });
+            }
+        });
     }
 
     public void openPanel() {
@@ -138,6 +160,7 @@ public final class BarcodeCaptureActivity extends AppCompatActivity implements B
                     public void onAnimationEnd(Animation animation) {
                         panelTop.setVisibility(View.GONE);
                         panelBottom.setVisibility(View.GONE);
+                        fabInsertBarcode.setVisibility(View.VISIBLE);
                     }
 
                     @Override
@@ -476,9 +499,12 @@ public final class BarcodeCaptureActivity extends AppCompatActivity implements B
     @Override
     public void onBarcodeDetected(Barcode barcode) {
         //do something with barcode data returned
+        startNextActivity(barcode.displayValue);
+    }
+
+    private void startNextActivity(String barcode){
         Intent data = new Intent(this, SaveProductActivity.class);
         data.putExtra(BarcodeObject, barcode);
         startActivity(data);
-        //setResult(CommonStatusCodes.SUCCESS, data);
     }
 }

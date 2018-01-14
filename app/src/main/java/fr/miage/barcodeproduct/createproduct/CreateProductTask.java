@@ -14,7 +14,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -24,7 +23,6 @@ import fr.miage.barcodeproduct.model.Product;
 import fr.miage.barcodeproduct.model.ProductMapper;
 import fr.miage.barcodeproduct.model.remote.BarcodeProductAPI;
 import fr.miage.barcodeproduct.model.remote.ProductDocument;
-import fr.miage.barcodeproduct.model.remote.ProductStore;
 import fr.miage.barcodeproduct.model.remote.UserProduct;
 import fr.miage.barcodeproduct.utils.ApplicationPreferences;
 import fr.miage.barcodeproduct.utils.ImageUtils;
@@ -35,18 +33,16 @@ import io.realm.RealmList;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
-import okhttp3.ResponseBody;
 import retrofit2.Response;
-import retrofit2.http.Multipart;
 
 public class CreateProductTask extends AsyncTask<Product, Integer, Boolean> {
     private static final String TAG = CreateProductTask.class.getSimpleName();
-    private WeakReference<Context> context;
+    private WeakReference<ChooseFileActivity> context;
     private String email;
     private String password;
     private Product product;
 
-    CreateProductTask(Context context) {
+    CreateProductTask(ChooseFileActivity context) {
         this.context = new WeakReference<>(context);
     }
 
@@ -55,10 +51,12 @@ public class CreateProductTask extends AsyncTask<Product, Integer, Boolean> {
         ApplicationPreferences appPrefs = new ApplicationPreferences(context.get());
         email = appPrefs.getEmail();
         password = appPrefs.getPassword();
+        context.get().showProgress(true);
     }
 
     @Override
     protected void onPostExecute(Boolean success) {
+        context.get().showProgress(false);
         if (success) {
             goToMainActivity();
         }else{

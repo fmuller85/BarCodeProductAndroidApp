@@ -16,6 +16,29 @@ public class BarcodeProductAPI{
         return new BarcodeProductAPI(email, password);
     }
 
+    public static BarcodeProductAPI getInstance() {
+        return new BarcodeProductAPI();
+    }
+
+    private BarcodeProductAPI()
+    {
+        OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
+        httpClient.connectTimeout(40, TimeUnit.SECONDS);
+        httpClient.readTimeout(20, TimeUnit.SECONDS);
+
+        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
+        logging.setLevel(HttpLoggingInterceptor.Level.BODY);
+        httpClient.addInterceptor(logging);
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(BASE_URL)
+                .client(httpClient.build())
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        apiService = retrofit.create(BarcodeProductApiService.class);
+    }
+
     private BarcodeProductAPI(String email, String password)
     {
         OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
