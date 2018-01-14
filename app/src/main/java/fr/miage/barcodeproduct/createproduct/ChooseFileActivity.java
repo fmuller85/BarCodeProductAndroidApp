@@ -113,6 +113,7 @@ public class ChooseFileActivity extends AppCompatActivity implements AttachedFil
             filesPath = new ArrayList<>();
         } else {
             filesPath = savedInstanceState.getStringArrayList("filesPath");
+            mCurrentPhotoPath = savedInstanceState.getString("currentPhotoPath");
             System.out.println("SAVED INSTANCE STATE " + savedInstanceState.toString());
         }
         //filesPath.add("Default path");
@@ -198,6 +199,7 @@ public class ChooseFileActivity extends AppCompatActivity implements AttachedFil
     @Override
     public void onSaveInstanceState(Bundle outState) {
         outState.putStringArrayList("filesPath", filesPath);
+        outState.putString("currentPhotoPath", mCurrentPhotoPath);
         super.onSaveInstanceState(outState);
     }
 

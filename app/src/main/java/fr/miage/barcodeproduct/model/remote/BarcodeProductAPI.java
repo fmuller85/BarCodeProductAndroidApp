@@ -27,7 +27,7 @@ public class BarcodeProductAPI{
         httpClient.readTimeout(20, TimeUnit.SECONDS);
 
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
-        logging.setLevel(HttpLoggingInterceptor.Level.BODY);
+        logging.setLevel(HttpLoggingInterceptor.Level.BASIC);
         httpClient.addInterceptor(logging);
 
         Retrofit retrofit = new Retrofit.Builder()
@@ -46,7 +46,7 @@ public class BarcodeProductAPI{
         httpClient.readTimeout(20, TimeUnit.SECONDS);
 
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
-        logging.setLevel(HttpLoggingInterceptor.Level.BODY);
+        logging.setLevel(HttpLoggingInterceptor.Level.BASIC);
         httpClient.addInterceptor(logging);
         httpClient.addInterceptor(new BasicAuthInterceptor(email, password));
 

@@ -262,12 +262,15 @@ public class ProductDetailActivity extends AppCompatActivity {
     }
 
     private void deleteProductFromDB() {
-        realm.executeTransaction(new Realm.Transaction() {
-            @Override
-            public void execute(@NonNull Realm realm) {
-                product.deleteFromRealm();
-            }
-        });
+        if(product != null){
+            documents.removeAllChangeListeners();
+            realm.executeTransaction(new Realm.Transaction() {
+                @Override
+                public void execute(@NonNull Realm realm) {
+                    product.deleteFromRealm();
+                }
+            });
+        }
     }
 
     private void showSucces() {
