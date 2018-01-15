@@ -85,7 +85,7 @@ public class ChooseFileActivity extends AppCompatActivity implements AttachedFil
         fabAddDoc.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(checkReadExternalStoragePermission(SELECT_DOC)){
+                if (checkReadExternalStoragePermission(SELECT_DOC)) {
                     executeAction(SELECT_DOC);
                 }
             }
@@ -94,7 +94,7 @@ public class ChooseFileActivity extends AppCompatActivity implements AttachedFil
         fabAddPicFromGallery.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(checkReadExternalStoragePermission(SELECT_PIC)){
+                if (checkReadExternalStoragePermission(SELECT_PIC)) {
                     executeAction(SELECT_PIC);
                 }
             }
@@ -103,7 +103,7 @@ public class ChooseFileActivity extends AppCompatActivity implements AttachedFil
         fabTakePic.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(checkReadExternalStoragePermission(TAKE_PIC)){
+                if (checkReadExternalStoragePermission(TAKE_PIC)) {
                     executeAction(TAKE_PIC);
                 }
             }
@@ -147,25 +147,31 @@ public class ChooseFileActivity extends AppCompatActivity implements AttachedFil
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        System.out.println(mCurrentPhotoPath+" requestCode = [" + requestCode + "], resultCode = [" + resultCode + "], data = [" + data + "]");
         switch (requestCode) {
-            case FilePickerConst.REQUEST_CODE_PHOTO:
+            case FilePickerConst.REQUEST_CODE_PHOTO: {
                 if (resultCode == Activity.RESULT_OK && data != null) {
                     filesPath.addAll(0, data.getStringArrayListExtra(FilePickerConst.KEY_SELECTED_MEDIA));
                 }
                 break;
-            case FilePickerConst.REQUEST_CODE_DOC:
+            }
+
+            case FilePickerConst.REQUEST_CODE_DOC: {
                 if (resultCode == Activity.RESULT_OK && data != null) {
                     filesPath.addAll(0, data.getStringArrayListExtra(FilePickerConst.KEY_SELECTED_DOCS));
                 }
                 break;
-            case REQUEST_TAKE_PHOTO:
+            }
+
+            case REQUEST_TAKE_PHOTO: {
                 if (resultCode == Activity.RESULT_OK && mCurrentPhotoPath != null) {
                     filesPath.add(mCurrentPhotoPath);
                     StorageUtils.galleryAddPic(this, mCurrentPhotoPath);
                 }
                 break;
+            }
+
         }
-        System.out.println("onActivityResult SIZE : " + filesPath.size());
         adapter.notifyDataSetChanged();
     }
 
@@ -227,28 +233,33 @@ public class ChooseFileActivity extends AppCompatActivity implements AttachedFil
     public final static int SELECT_PIC = 2;
     public final static int TAKE_PIC = 3;
 
-    private void executeAction(int requestCode){
-        if(requestCode == SELECT_DOC){
+    private void executeAction(int requestCode) {
+        if (requestCode == SELECT_DOC) {
             FilePickerBuilder.getInstance().setMaxCount(1)
                     .setActivityTheme(R.style.AppTheme)
                     .pickFile(ChooseFileActivity.this);
         }
-        if(requestCode == SELECT_PIC){
+        if (requestCode == SELECT_PIC) {
             FilePickerBuilder.getInstance().setMaxCount(1)
                     .setActivityTheme(R.style.AppTheme)
                     .pickPhoto(ChooseFileActivity.this);
         }
-        if(requestCode == TAKE_PIC){
+        if (requestCode == TAKE_PIC) {
             dispatchTakePictureIntent(REQUEST_TAKE_PHOTO);
         }
     }
 
-    public boolean checkReadExternalStoragePermission(int requestCode){
-        if(ContextCompat.checkSelfPermission(ChooseFileActivity.this,
-                Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
+    public boolean checkReadExternalStoragePermission(int requestCode) {
+        boolean readStorage = ContextCompat.checkSelfPermission(ChooseFileActivity.this,
+                Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
 
+        boolean writeStorage = ContextCompat.checkSelfPermission(ChooseFileActivity.this,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
+
+        if (!readStorage && !writeStorage) {
             ActivityCompat.requestPermissions(ChooseFileActivity.this,
-                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, requestCode);
+                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE}, requestCode);
 
             return false;
         }
@@ -256,9 +267,9 @@ public class ChooseFileActivity extends AppCompatActivity implements AttachedFil
     }
 
     @Override
-    public void onRequestPermissionsResult (int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults){
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         switch (requestCode) {
-            case SELECT_DOC :{
+            case SELECT_DOC: {
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     {
                         if (ContextCompat.checkSelfPermission(ChooseFileActivity.this,
@@ -275,7 +286,7 @@ public class ChooseFileActivity extends AppCompatActivity implements AttachedFil
                 }
             }
 
-            case SELECT_PIC :{
+            case SELECT_PIC: {
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     {
                         if (ContextCompat.checkSelfPermission(ChooseFileActivity.this,
@@ -291,7 +302,7 @@ public class ChooseFileActivity extends AppCompatActivity implements AttachedFil
                 }
             }
 
-            case TAKE_PIC :{
+            case TAKE_PIC: {
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     {
                         if (ContextCompat.checkSelfPermission(ChooseFileActivity.this,
